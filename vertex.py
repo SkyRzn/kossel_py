@@ -1,6 +1,3 @@
-#!/usr/bin/python
-
-
 from opyscad import *
 from config import *
 import math
@@ -35,7 +32,19 @@ def edge_screw(x, z, side):
 	scr <<= [x, y, z]
 	return (scr / [0, 0, 30 * side])
 
-def vertex(h, preview = False):
+def screws(z):
+	res = z_screw(z, 1)
+	res += z_screw(z, -1)
+
+	res += edge_screw(edge_screw1_x, z, 1)
+	res += edge_screw(edge_screw1_x, z, -1)
+
+	res += edge_screw(edge_screw2_x, z, 1)
+	res += edge_screw(edge_screw2_x, z, -1)
+
+	return res
+
+def vertex(h, bottom = False):
 	vert = cube([profile_w, profile_w + vertex_t * 2, h]) << [-profile_w/2, -profile_w/2 - vertex_t, 0]
 
 	edge = cube([vertex_l, profile_w, h]) << [edge_offset_x - 0.01, -profile_w/2, 0]
@@ -71,17 +80,19 @@ def vertex(h, preview = False):
 	res -= (cut << [0, -edge_offset_y + profile_w/2 - 1, 0]) / [0, 0, -30]
 
 	#### screws
-	res -= z_screw(h/2, 1)
-	res -= z_screw(h/2, -1)
+	if bottom:
+		res -= screws(profile_w/2)
+		res -= screws(h - profile_w/2)
+	else:
+		res -= screws(h/2)
 
-	res -= edge_screw(edge_screw1_x, h/2, 1)
-	res -= edge_screw(edge_screw1_x, h/2, -1)
-
-	res -= edge_screw(edge_screw2_x, h/2, 1)
-	res -= edge_screw(edge_screw2_x, h/2, -1)
+	#### cut
+	#r = 28
+	#x = edge_offset_x/2 - 12
+	#y = r + edge_offset_y
+	#cut = cylinder(h + 2, r, fn = corner_fn)
+	#res -= (cut << [x, y, -1]) / [0, 0, 30]
+	#res -= (cut << [x, -y, -1]) / [0, 0, -30]
 
 	return res
 
-res = vertex(30)
-res += ~cube([profile_w, profile_w, height]) << [-profile_w/2, -profile_w/2, 0]
-res.save('lol.scad')
