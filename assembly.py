@@ -86,4 +86,17 @@ res += create_rails()
 
 res += create_bed() << [0, 0, bed.height]
 
+def rods():
+	x = -25
+	y = 20
+	z = 170
+	rod = (cylinder(h = 300, d = 8)/[0, -35, 0])
+	res = rod  << [x, -y, z]
+	res += rod  << [x, y, z]
+	return res
+
+res += rods()
+res += rods() / [0, 0, 120]
+res += rods() / [0, 0, 240]
+
 res.save('assembly.scad')
