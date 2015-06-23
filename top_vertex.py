@@ -2,13 +2,13 @@
 
 
 from opyscad import *
-from vertex import vertex
+from vertex import create_vertex
 from config import *
 
 
-def top_vertex():
-	return vertex(profile_w)
+def create_top_vertex():
+	return create_vertex(bar.width, extra_height = vertex.top_extra_height)
 
 if __name__ == '__main__':
-	res = top_vertex()
+	res = create_top_vertex()
 	res.save('top_vertex.scad')
