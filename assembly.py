@@ -7,6 +7,7 @@ from top_vertex import create_top_vertex
 from bottom_vertex import create_bottom_vertex
 from profile import profile
 from mgn_12h import MGN_12H_rail, MGN_12H_block
+from bed import create_bed
 
 
 def hor_bars():
@@ -21,7 +22,7 @@ def hor_bars():
 
 def vert_bars():
 	vbar = profile(main.vbar_len)
-	vbar <<= [-vertex.base_center2vertex() - 0.01, 0, 0]
+	vbar <<= [-vertex.base_center2vertex() - 0.01, 0, 0.01]
 
 	res = vbar
 	res += vbar / [0, 0, 120]
@@ -81,8 +82,8 @@ res += create_top_frame()
 
 res += create_bottom_frame()
 
-res += ~cylinder(bed.thickness, d = bed.diameter) << [0, 0, bed.height]
-
 res += create_rails()
+
+res += create_bed() << [0, 0, bed.height]
 
 res.save('assembly.scad')
