@@ -4,16 +4,22 @@ import math
 
 
 class Screw:
-	def __init__(self, d1, d2, hole_gap):
-		self.d1 = d1
-		self.d2 = d2
-		self.hole_gap = hole_gap
+	def __init__(self, d, size, gap_thread, gap_octo, gap_cyl):
+		self.d = d
+		self.size = size
+		self.gap_thread = gap_thread
+		self.gap_octo = gap_octo
+		self.gap_cyl = gap_cyl
 
-	def hole(self, h1, h2):
-		res = cylinder(h1 + 0.01, d = self.d1 + self.hole_gap, fn = 32)
+	def hole(self, h1, h2, octo = False):
+		res = cylinder(h1 + 0.01, d = self.d + self.gap_thread * 2, fn = 32)
 		res <<= [0, 0, -h1]
-		res += cylinder(h2, d = self.d2, fn = 32)
+		d_head = self.size * 2 / math.sqrt(3)
+		d_head += (self.gap_octo if octo else self.gap_cyl) * 2
+		res += cylinder(h2, d = d_head, fn = 6 if octo else 32)
 		return res
+	
+		
 
 
 

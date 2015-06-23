@@ -9,8 +9,9 @@ class Settings():
 			if type(val) == int:
 				setattr(self, key, float(val))
 
-m6 = Screw(6, 10, 0.2)
-m5 = Screw(5, 9.5, 0.2)
+m6 = Screw(6, 10, 0.3, 0.3, 0.5)
+m5 = Screw(5, 8, 0.3, 0.3, 0.5)
+m3 = Screw(3, 5.5, 0.25, 0.4, 0.5)
 
 class Main(Settings):
 	hbar_len = 360

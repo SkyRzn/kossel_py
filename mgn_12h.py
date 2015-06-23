@@ -23,6 +23,7 @@ L = 45.4
 H2 = 2.5
 s_d = 3
 s_h = 4
+C1 = (L - C)/2
 
 #### assembly
 H = 13.0
@@ -40,7 +41,6 @@ def MGN_12H_block():
 	screw = cylinder(s_h + 1, d = s_d) / [0, 90, 0]
 	screw <<= [H - H1 - s_h, 0, 0]
 
-	C1 = (L - C)/2
 	res -= screw << [0, B1, C1]
 	res -= screw << [0, B1, C1 + C]
 	res -= screw << [0, B1 + B, C1]
