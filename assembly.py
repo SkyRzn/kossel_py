@@ -62,8 +62,8 @@ def create_rail(length, z):
 	res += MGN_12H_block() << [0, 0, z]
 	return res
 
-def create_rails():
-	r = create_rail(rail.length, rail.length/2)
+def create_rails(z):
+	r = create_rail(rail.length, z)
 	r <<= [-vertex.base_center2vertex() + bar.width/2, 0, 0]
 
 	res = r
@@ -82,21 +82,38 @@ res += create_top_frame()
 
 res += create_bottom_frame()
 
-res += create_rails()
-
 res += create_bed() << [0, 0, bed.height]
 
-def rods():
-	x = -25
-	y = 20
-	z = 170
-	rod = (cylinder(h = 300, d = 8)/[0, -35, 0])
+
+def rods(z, a, b = 0):
+	x = -192
+	y = 23.5
+	rod_len = 303
+	rod = (cylinder(h = rod_len, d = 6) / [0, 180 - a, b])
 	res = rod  << [x, -y, z]
 	res += rod  << [x, y, z]
 	return res
 
-res += rods()
-res += rods() / [0, 0, 120]
-res += rods() / [0, 0, 240]
+#z = 250 + 30 + 280
+#a = 32.7
+#res += rods(z + 116, a)
+#res += rods(z + 116, a) / [0, 0, 120]
+#res += rods(z + 116, a) / [0, 0, 240]
+
+z = 260
+a = 31
+b = -47
+res += rods(z + 116, a, b) / [0, 0, 120]
+res += rods(z + 116, a, -b) / [0, 0, 240]
+
+res += create_rails(z)
+z = 0
+a = 90
+b = 0
+res += rods(z + 116, a, b)
+
+
+eff = imp('effector.stl') + (+cylinder(300, 1) << [0, 0, -200])
+res += (eff / [0, 0, 30]) << [130, 0, z + 110]
 
 res.save('assembly.scad')
