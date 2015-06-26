@@ -1,8 +1,9 @@
-#!/usr/bin/python
-
-
 from opyscad import *
+import vertex, config, bar, rod, carriage
 
+
+length = 600.0
+rail_z = 100.0
 
 #### rail
 Hr = 8.0
@@ -30,12 +31,15 @@ H = 13.0
 H1 = 4.0
 N = 8.5
 
+rod_mount_dx = H + carriage.rod_dx
+belt_dx = H + carriage.belt_dx
 
-def MGN_12H_rail(length):
+
+def rail(length):
 	res = cube([Hr, Wr, length]) << [0, -Wr/2, 0]
 	return res
 
-def MGN_12H_block():
+def block():
 	res = color([0.1, 0.8, 0]) (cube([H - H1, W, L]))
 
 	screw = cylinder(s_h + 1, d = s_d) / [0, 90, 0]
@@ -46,10 +50,13 @@ def MGN_12H_block():
 	res -= screw << [0, B1 + B, C1]
 	res -= screw << [0, B1 + B, C1 + C]
 
-
 	res <<= [H1, -W/2, -L/2]
 
-	car = color([1, 0.5, 0]) (imp('carriage.stl')) / [90, 0, 90]
-	res += car << [H, 0, 0]
-
 	return res
+
+def create(z):
+	rl = rail(length) << [0, 0, rail_z]
+	blk = block() << [0, 0, -carriage.rod_dz]
+	blk += carriage.create() << [H, 0, 0]
+	return rl + (blk << [0, 0, z])
+

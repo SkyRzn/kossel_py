@@ -2,13 +2,14 @@
 
 
 from opyscad import *
-from vertex import create_vertex
-from config import *
+import vertex
+import config
 
 
-def create_bottom_vertex():
-	return create_vertex(vertex.bottom_height, bottom = True)
+def create():
+	return vertex.create(config.bottom_height, bottom = True)
+
 
 if __name__ == '__main__':
-	res = create_bottom_vertex()
-	res.save('bottom_vertex.scad')
+	res = create()
+	res.save('scad/bottom_vertex.scad')

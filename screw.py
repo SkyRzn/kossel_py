@@ -1,5 +1,4 @@
 from opyscad import *
-from config import *
 import math
 
 
@@ -19,7 +18,10 @@ class Screw:
 		res += cylinder(h2, d = d_head, fn = 6 if octo else 32)
 		return res
 	
-		
+m3 = Screw(3.0, 5.5, 0.25, 0.4, 0.5)
+m5 = Screw(5.0, 8.0, 0.3, 0.3, 0.5)
+m6 = Screw(6.0, 10.0, 0.3, 0.3, 0.5)
+
 
 
 

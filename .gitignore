@@ -1,5 +1,6 @@
 *.pyc
 *.scad
 *.gcode
+scad/*
 opyscad.py
 
