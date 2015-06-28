@@ -3,7 +3,7 @@ import vertex, config, bar, rod, carriage
 
 
 length = 600.0
-rail_z = 100.0
+rail_z = 80.0
 
 #### rail
 Hr = 8.0
@@ -37,10 +37,10 @@ belt_dx = H + carriage.belt_dx
 
 def rail(length):
 	res = cube([Hr, Wr, length]) << [0, -Wr/2, 0]
-	return res
+	return color(config.railcol) (res)
 
 def block():
-	res = color([0.1, 0.8, 0]) (cube([H - H1, W, L]))
+	res = color(config.blockcol) (cube([H - H1, W, L]))
 
 	screw = cylinder(s_h + 1, d = s_d) / [0, 90, 0]
 	screw <<= [H - H1 - s_h, 0, 0]

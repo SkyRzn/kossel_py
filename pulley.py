@@ -5,9 +5,9 @@ import vertex, config, bar, rail, motor
 D = 10.0
 D1 = 15.0
 d = 5.0
-B1 = 4.0
-B2 = 1.0
-B = 11.0
+B1 = 7.5
+B2 = 1.2
+B = 15.7
 
 
 def create():

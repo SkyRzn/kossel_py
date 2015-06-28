@@ -1,8 +1,9 @@
 from opyscad import *
 from delta_math import points_dist, rotate
-import effector
+import effector, config
 
-length = 300 + 300.0/100*9
+
+length = 328 #+ 300.0/100*9
 d = 5.8
 
 
@@ -27,8 +28,7 @@ def create_rod(p1, p2, fi, side):
 	rlen = round(length, 2)
 	if pdist != rlen:
 		print 'rod_length error %.3f != %.3f' % (rlen, pdist)
-	return res
-
+	return color(config.rodcol) (res)
 
 def create(p1, p2, fi):
 	res = create_rod(p1, p2, fi, -1)

@@ -28,9 +28,9 @@ def tslot(length):
 
 def tnut(length, nut, t):
 	res = tslot(length)
-	res -= nut.hole(t + 1, 20, True) << [0, 0, t]
+	res -= nut.hole(t + 1, 20, octo = True) << [0, 0, t]
 	return res
 
 if __name__ == '__main__':
-	tnut(12, screw.m3, 1).save('scad/tnut.scad')
+	tnut(12, screw.m5, 0.8).save('scad/tnut.scad')
 	

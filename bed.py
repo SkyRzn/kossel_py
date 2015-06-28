@@ -1,6 +1,6 @@
 from opyscad import *
-
 import config
+
 
 diameter = 260.0
 plate_thickness = 3.0
@@ -11,6 +11,7 @@ d = 265.0
 hole_d = 3.2
 
 full_height = height + plate_thickness + glass_thickness
+
 
 def create():
 	res = union()
@@ -26,7 +27,9 @@ def create():
 	res += s / [0, 0, 120]
 	res += s / [0, 0, 240]
 	
-	res += cylinder(h = plate_thickness, d = d)
+	res += cylinder(h = plate_thickness, d = d, fn = 64)
+	
+	res = color(config.bedcol) (res)
 	
 	res += ~cylinder(glass_thickness, d = diameter, fn = 64) << [0, 0, glass_thickness + 0.01]
 	
