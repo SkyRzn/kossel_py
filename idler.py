@@ -6,7 +6,7 @@ import math, copy
 
 
 l = 30.0
-t = 3.0
+t = 4.0
 belt_gap = 2
 w = bearing.D1 + t * 2 + belt_gap * 2.0
 dx = bearing.D1 / 2
@@ -101,6 +101,8 @@ def create_knob(printing = False):
 		res += create_trigger(False)
 
 	res -= knob_nut.hole(knob_nut_h + 1, knob_h, octo = True) << [0, 0, knob_nut_h]
+	res += knob_nut.z_sup(knob_h - knob_nut_h + 0.1) << [0, 0, knob_nut_h - 0.1]
+	print knob_h - knob_nut_h
 	return color(config.knobcol) (res)
 
 def create_trigger(gap):
@@ -121,6 +123,4 @@ if 1: #__name__ == '__main__':
 	res.save('scad/idler.scad')
 	
 	res = (create_knob(True) / [180, 0, 0]) << [0, 0, knob_h]
-	res += ((cylinder(2, d = knob_d) - (create_trigger(True) << [0, 0, 2])) << [50, 0, -2]) / [180, 0, 0]
-	res -= cylinder(4, d=6) << [50, 0, -1]
 	res.save('scad/knob.scad')

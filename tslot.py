@@ -31,6 +31,14 @@ def tnut(length, nut, t):
 	res -= nut.hole(t + 1, 20, octo = True) << [0, 0, t]
 	return res
 
-if __name__ == '__main__':
-	tnut(12, screw.m5, 0.8).save('scad/tnut.scad')
+def tnut_l(length, nut, t):
+	res = cube([length, 7.5, 4]) << [-length/2.0, -7.5/2, 0]
+	res -= nut.hole(t + 1, 20, octo = True) << [0, 0, t]
+	return res
+	
+
+if 1: #__name__ == '__main__':
+	tnut(12, screw.m5, 0.8).save('scad/tnut_m5.scad')
+	tnut(12, screw.m3, 0.8).save('scad/tnut_m3.scad')
+	tnut_l(16, screw.m3, 2).save('scad/tnut_l_16_m3.scad')
 	

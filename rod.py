@@ -1,9 +1,9 @@
 from opyscad import *
 from delta_math import points_dist, rotate
-import effector, config
+import effector, config, math
 
 
-length = 328 #+ 300.0/100*9
+length = 340 #+ 300.0/100*9
 d = 5.8
 
 
@@ -22,6 +22,7 @@ def create_rod(p1, p2, fi, side):
 	p2 = eff_move_y(p2, fi, side)
 	rod1 = sphere(d = d) << p1
 	rod2 = sphere(d = d) << p2
+	
 	res = hull() (rod1, rod2)
 
 	pdist = round(points_dist(p1, p2), 2)
@@ -34,4 +35,7 @@ def create(p1, p2, fi):
 	res = create_rod(p1, p2, fi, -1)
 	res += create_rod(p1, p2, fi, 1)
 	return res
+
+
+
 

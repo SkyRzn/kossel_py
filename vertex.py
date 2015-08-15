@@ -7,22 +7,21 @@ thickness = 4.5
 hbar_mount_len = 77.0
 hbar_offset_x = 28.0
 hbar_offset_y = 25.0 #20
-hbar_end_screws = True
+hbar_end_screws = False
 window_r = 5.0
 top_extra_height = 20.0
 hbar_screw_type = screw.m5
 vbar_screw_type = screw.m5
 vbar_screw_distance = 7.0
-screw_cap_depth = 1.0
+screw_cap_depth = 1.5
 hbar_screw_x1 = 7.0
 hbar_screw_x2 = 66.0
-plate_h = 0.0
 corner_cut_r = 0.7
 ends_disks_h = 0.4
 top_septum_x = 65.0
 cap_t = 4.0
 idler_slot_t = 3.0
-idler_slot_h = 48.0
+idler_slot_h = 45.0
 
 def base_edge_len():
 	return config.hbar_len + hbar_offset_x * 2
@@ -44,7 +43,7 @@ def trapeze(h, r, x1, x2, y):
 	return hull() (a, b, c, d)
 
 def hbar_screw(x, z, side):
-	scr = hbar_screw_type.hole(thickness + 2, thickness + 2, 50, 9.0) / [90 * side, 0, 0]
+	scr = hbar_screw_type.hole(thickness + 2, thickness + 2, 10, 9.0) / [90 * side, 0, 0]
 	x += hbar_offset_x
 	y = (hbar_offset_y - bar.width/2 - thickness + screw_cap_depth) * side
 	res = scr << [x, y, z]
@@ -68,7 +67,7 @@ def screws(z):
 
 def z_screw(z, side):
 	scr = vbar_screw_type.hole(thickness + 1, bar.width) / [90 * side, 0, 0]
-	y = (-bar.width/2 - thickness - bar.gap) * side
+	y = (-bar.width/2 - thickness - bar.gap + screw_cap_depth) * side
 	return scr << [0, y, z]
 
 def z_screws(z):
@@ -77,19 +76,19 @@ def z_screws(z):
 	return res
 
 def create(h, bottom = False, extra_height = 0, ends_disks_r = 0):
-	dz = plate_h or -1
+	dz = -1
 	h2 = h + extra_height
 	
-	vert = cube([bar.width, bar.width + thickness * 2, h2 + plate_h]) << [-bar.width/2, -bar.width/2 - thickness, 0]
+	vert = cube([bar.width, bar.width + thickness * 2, h2]) << [-bar.width/2, -bar.width/2 - thickness, 0]
 
-	edge = cube([hbar_mount_len, bar.width, h + plate_h]) << [hbar_offset_x - 0.01, -bar.width/2, 0]
+	edge = cube([hbar_mount_len, bar.width, h]) << [hbar_offset_x - 0.01, -bar.width/2, 0]
 	edge1 = (edge << [0, hbar_offset_y, 0]) / [0, 0, 30]
 	edge2 = (edge << [0, -hbar_offset_y, 0]) / [0, 0, -30]
 
 	res = hull() (vert, edge1, edge2)
 	
 	vert = cube([bar.width + 1 + bar.gap, bar.width + bar.gap*2, h2 + 2])
-	res -= vert << [-bar.width/2 - 1, -bar.width/2 - bar.gap, dz - bar.gap]
+	res -= vert << [-bar.width/2 - 1, -bar.width/2 - bar.gap, -1]
 
 	#### cut edge profile
 	edge = cube([hbar_mount_len + 2, bar.width + 1, h2 + 2]) << [hbar_offset_x - bar.gap, -bar.width/2, dz - bar.gap]
@@ -97,24 +96,12 @@ def create(h, bottom = False, extra_height = 0, ends_disks_r = 0):
 	res -= (edge << [0, -hbar_offset_y - 1 + bar.gap, 0]) / [0, 0, -30]
 	
 	#### cut corners
-	cut = cylinder(h2 + 2, corner_cut_r, fn = 16) << [0, 0, dz]
+	cut = cylinder(h2 + 2, corner_cut_r, fn = 16) << [0, 0, -1]
 	res -= (cut << [hbar_offset_x, -hbar_offset_y + bar.width/2, 0]) / [0, 0, -30]
 	res -= (cut << [hbar_offset_x, hbar_offset_y - bar.width/2, 0]) / [0, 0, 30]
 	res -= cut << [bar.width/2, bar.width/2, 0]
 	res -= cut << [bar.width/2, -bar.width/2, 0]
 	
-	if plate_h:
-		cut = cylinder(hbar_mount_len, corner_cut_r, fn = 16) / [0, 90, 0]
-		res -= (cut << [hbar_offset_x - corner_cut_r, -hbar_offset_y + bar.width/2, dz])  / [0, 0, -30]
-		res -= (cut << [hbar_offset_x - corner_cut_r, hbar_offset_y - bar.width/2, dz])  / [0, 0, 30]
-		cut /= [0, 0, 180]
-		res -= cut << [bar.width/2 + corner_cut_r, bar.width/2, dz]
-		res -= cut << [bar.width/2 + corner_cut_r, -bar.width/2, dz]
-		cut = cylinder(bar.width + 1, corner_cut_r, fn = 16) / [90, 0, 0]
-		res -= (cut << [hbar_offset_x, -hbar_offset_y + bar.width/2, dz]) / [0, 0, -30]
-		cut /= [0, 0, 180]
-		res -= (cut << [hbar_offset_x, hbar_offset_y - bar.width/2, dz]) / [0, 0, 30]
-
 	#### windows
 	y = -hbar_offset_y + bar.width/2 + window_r + thickness
 	mx = 1.0/(math.cos(math.pi/6))
@@ -125,11 +112,11 @@ def create(h, bottom = False, extra_height = 0, ends_disks_r = 0):
 		septum_x = top_septum_x
 	x1 = (bar.width/2 + window_r + thickness) * mx
 	x2 = (septum_x - thickness - window_r) * mx
-	res -= trapeze(h2 + 2, window_r, x1, x2, y) << [0, 0, dz]
+	res -= trapeze(h2 + 2, window_r, x1, x2, y) << [0, 0, -1]
 
 	x1 = (septum_x + window_r)*mx
 	x2 = hbar_mount_len + hbar_offset_x
-	res -= trapeze(h2 + 2, window_r, x1, x2, y) << [0, 0, dz]
+	res -= trapeze(h2 + 2, window_r, x1, x2, y) << [0, 0, -1]
 
 	if bottom:
 		cut = cylinder(h = thickness + 2, d = motor.lip_cutout_d, fn = 32) / [0, 90, 0]
@@ -145,19 +132,19 @@ def create(h, bottom = False, extra_height = 0, ends_disks_r = 0):
 
 	#### cut ends
 	cut = cube([thickness + 1, thickness + 2, h + 2])
-	cut <<= [hbar_offset_x + hbar_mount_len - thickness, 0, dz]
+	cut <<= [hbar_offset_x + hbar_mount_len - thickness, 0, -1]
 	res -= (cut << [0, hbar_offset_y - bar.width/2 - thickness - 1, 0]) / [0, 0, 30]
 	res -= (cut << [0, -hbar_offset_y + bar.width/2 - 1, 0]) / [0, 0, -30]
 
 	#### screws
 	if bottom:
-		res -= screws(bar.width/2 + dz)
-		res -= screws(h - bar.width/2 + dz)
+		res -= screws(bar.width/2)
+		res -= screws(h - bar.width/2)
 	else:
-		res -= screws(h/2 + dz)
+		res -= screws(h/2)
 
-	res -= z_screws(vbar_screw_distance + dz)
-	res -= z_screws(h2 - vbar_screw_distance + dz)
+	res -= z_screws(vbar_screw_distance)
+	res -= z_screws(h2 - vbar_screw_distance)
 	
 	if ends_disks_r:
 		disk = cylinder(ends_disks_h, ends_disks_r)
@@ -193,6 +180,21 @@ def create_cap():
 	
 	res += idler_slot
 	
-	res -= cube([200, 200, 200]) << [45, -100, -100]
+	res -= (screw.m8.hole(cap_t + 2, 0) / [180, 0, 0]) << [0, 0, -1]
+	
+	scrw = (screw.m5.contersum_hole(cap_t + 2, 3, 9.4, cap_t) / [180, 0, 0]) << [0, 0, 2.75]
+	scrws = scrw << [hbar_screw_x1 + hbar_offset_x, 0, 0]
+	scrws += scrw << [hbar_screw_x2 + hbar_offset_x, 0, 0]
+	
+	res -= (scrws << [0, hbar_offset_y, 0]) / [0, 0, 30]
+	res -= (scrws << [0, -hbar_offset_y, 0]) / [0, 0, -30]
+	
+	#res -= cube([200, 200, 200]) << [45, -100, -100]
 	
 	return color(config.plcol) (res)
+
+def create_modifiers(h):
+	mod = cube([bar.width, bar.width, h + 2]) << [-bar.width/2, 0, -1]
+	res = mod << [0, bar.width/2 + thickness, 0]
+	res += mod << [0, -bar.width * 1.5 - thickness, 0]
+	return res

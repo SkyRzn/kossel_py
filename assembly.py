@@ -2,8 +2,8 @@
 
 
 from opyscad import *
-import config, vertex, top_vertex, bottom_vertex, bar, bed, endstop
-import rail, kinematics, belt, motor, pulley, bearing, idler
+import config, vertex, top_vertex, bottom_vertex, bar, bed, endstop, endstop_mount
+import rail, kinematics, belt, motor, pulley, bearing, idler, bed_mount
 
 
 def hor_bars():
@@ -29,7 +29,7 @@ def vert_bars():
 def create_top_frame():
 	vert = top_vertex.create()
 	vert += top_vertex.create_cap()
-	vert <<= [-vertex.base_center2vertex(), 0, -vertex.plate_h]
+	vert <<= [-vertex.base_center2vertex(), 0, 0]
 	vert /= [180, 0, 0]
 	vert <<= [0, 0, bar.width]
 
@@ -42,7 +42,7 @@ def create_top_frame():
 	return frame << [0, 0, config.vbar_len - bar.width]
 
 def create_bottom_frame():
-	vert = bottom_vertex.create() << [-vertex.base_center2vertex(), 0, -vertex.plate_h]
+	vert = bottom_vertex.create() << [-vertex.base_center2vertex(), 0, 0]
 
 	frame = vert
 	frame += vert / [0, 0, 120]
@@ -86,17 +86,25 @@ def create_endstops():
 	res = (+endstop.create()) << [x, -15, 700]
 	return res
 
+def create_bed_mounts():
+	mount = bed_mount.create()
+	mount <<= [bed.l - bed.hole_dx, 0, config.bottom_height]
+	res = mount 
+	res += mount / [0, 0, 120]
+	res += mount / [0, 0, 240]
+	return res
 
 
 x = 0
 y = 0
-z = 305
+z = 200
 
 res = union()
 res += vert_bars()
 res += create_top_frame()
 res += create_bottom_frame()
 res += bed.create()
+res += create_bed_mounts()
 res += kinematics.create([x, y, z])
 res += create_belt_subsystem()
 #res += create_walls()

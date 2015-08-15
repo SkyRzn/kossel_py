@@ -16,3 +16,7 @@ def create_cap():
 if __name__ == '__main__':
 	res = create(8.0)
 	res.save('scad/top_vertex.scad')
+	res = vertex.create_modifiers(bar.width + vertex.top_extra_height)
+	res.save('scad/top_vertex_modifiers.scad')
+	res = vertex.create_cap()
+	res.save('scad/top_vertex_cap.scad')
